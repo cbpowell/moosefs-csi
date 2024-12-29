@@ -20,7 +20,7 @@ env:
   REGISTRY: ghcr.io
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}
-  DOCKERFILE: /cmd/bin/Dockerfile-mfs4-ce
+  DOCKERFILE: Dockerfile-mfs4-ce
 
 
 jobs:
