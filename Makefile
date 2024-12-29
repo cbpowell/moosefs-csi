@@ -13,20 +13,23 @@
 # limitations under the License.
 
 MFS3VER=3.0.117
-MFS4VER=4.44.4
+MFS4VER=4.56.6
 DRIVER_VERSION ?= 0.9.4
-MFS3TAGCE=$(DRIVER_VERSION)-$(MFS3VER)
-MFS3TAGPRO=$(DRIVER_VERSION)-$(MFS3VER)-pro
+#MFS3TAGCE=$(DRIVER_VERSION)-$(MFS3VER)
+#MFS3TAGPRO=$(DRIVER_VERSION)-$(MFS3VER)-pro
 MFS4TAGCE=$(DRIVER_VERSION)-$(MFS4VER)
 MFS4TAGPRO=$(DRIVER_VERSION)-$(MFS4VER)-pro
 DEVTAG=$(DRIVER_VERSION)-dev
 
 NAME=moosefs-csi
+USERNAME=cbpowell
+PASSWORD=${GH_TOKEN} 
 REPO=cbpowell
 DOCKER_REGISTRY=ghcr.io
 
 ready: clean compile
 publish-dev: clean compile build-dev push-dev
+publish-prod: clean compile build-prod push-prod
 
 compile:
 	@echo "==> Building the project"
@@ -37,19 +40,24 @@ build-dev:
 	@docker build -t $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(DEVTAG) cmd/moosefs-csi-plugin
 
 push-dev:
+	@echo "==> Logging into repo"
+	@docker login --username $(USERNAME) --password $(PASSWORD) $(DOCKER_REGISTRY)
 	@echo "==> Publishing DEV $(DOCKER_REGISTRY)/moosefs-csi-plugin:$(DEVTAG)"
 	@docker push $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(DEVTAG)
 	@echo "==> Your DEV image is now available at $(DOCKER_REGISTRY)/moosefs-csi-plugin:$(DEVTAG)"
 
 build-prod:
-	@docker build -t $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS3TAGCE) cmd/moosefs-csi-plugin -f cmd/moosefs-csi-plugin/Dockerfile-mfs3-ce
-	@docker build -t $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS3TAGPRO) cmd/moosefs-csi-plugin -f cmd/moosefs-csi-plugin/Dockerfile-mfs3-pro
+	#@docker build -t $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS3TAGCE) cmd/moosefs-csi-plugin -f cmd/moosefs-csi-plugin/Dockerfile-mfs3-ce
+	#@docker build -t $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS3TAGPRO) cmd/moosefs-csi-plugin -f cmd/moosefs-csi-plugin/Dockerfile-mfs3-pro
 	@docker build -t $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS4TAGCE) cmd/moosefs-csi-plugin -f cmd/moosefs-csi-plugin/Dockerfile-mfs4-ce
 	@docker build -t $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS4TAGPRO) cmd/moosefs-csi-plugin -f cmd/moosefs-csi-plugin/Dockerfile-mfs4-pro
 
 push-prod:
-	@docker push $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS3TAGCE)
-	@docker push $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS3TAGPRO)
+	@echo "==> Logging into repo"
+	@docker login --username $(USERNAME) --password $(PASSWORD) $(DOCKER_REGISTRY)
+	@echo "==> Publishing $(DOCKER_REGISTRY)/moosefs-csi
+	#@docker push $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS3TAGCE)
+	#@docker push $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS3TAGPRO)
 	@docker push $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS4TAGCE)
 	@docker push $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS4TAGPRO)
 
