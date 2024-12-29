@@ -17,11 +17,13 @@ MFS4VER=4.44.4
 DRIVER_VERSION ?= 0.9.4
 MFS3TAGCE=$(DRIVER_VERSION)-$(MFS3VER)
 MFS3TAGPRO=$(DRIVER_VERSION)-$(MFS3VER)-pro
+MFS4TAGCE=$(DRIVER_VERSION)-$(MFS4VER)
 MFS4TAGPRO=$(DRIVER_VERSION)-$(MFS4VER)-pro
 DEVTAG=$(DRIVER_VERSION)-dev
 
-NAME=moosefs-csi-plugin
-DOCKER_REGISTRY=registry.moosefs.com
+NAME=moosefs-csi
+REPO=cbpowell
+DOCKER_REGISTRY=ghcr.io
 
 ready: clean compile
 publish-dev: clean compile build-dev push-dev
@@ -32,22 +34,24 @@ compile:
 
 build-dev:
 	@echo "==> Building DEV docker images"
-	@docker build -t $(DOCKER_REGISTRY)/moosefs-csi-plugin:$(DEVTAG) cmd/moosefs-csi-plugin
+	@docker build -t $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(DEVTAG) cmd/moosefs-csi-plugin
 
 push-dev:
 	@echo "==> Publishing DEV $(DOCKER_REGISTRY)/moosefs-csi-plugin:$(DEVTAG)"
-	@docker push $(DOCKER_REGISTRY)/moosefs-csi-plugin:$(DEVTAG)
+	@docker push $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(DEVTAG)
 	@echo "==> Your DEV image is now available at $(DOCKER_REGISTRY)/moosefs-csi-plugin:$(DEVTAG)"
 
 build-prod:
-	@docker build -t $(DOCKER_REGISTRY)/moosefs-csi-plugin:$(MFS3TAGCE) cmd/moosefs-csi-plugin -f cmd/moosefs-csi-plugin/Dockerfile-mfs3-ce
-	@docker build -t $(DOCKER_REGISTRY)/moosefs-csi-plugin:$(MFS3TAGPRO) cmd/moosefs-csi-plugin -f cmd/moosefs-csi-plugin/Dockerfile-mfs3-pro
-	@docker build -t $(DOCKER_REGISTRY)/moosefs-csi-plugin:$(MFS4TAGPRO) cmd/moosefs-csi-plugin -f cmd/moosefs-csi-plugin/Dockerfile-mfs4-pro
+	@docker build -t $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS3TAGCE) cmd/moosefs-csi-plugin -f cmd/moosefs-csi-plugin/Dockerfile-mfs3-ce
+	@docker build -t $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS3TAGPRO) cmd/moosefs-csi-plugin -f cmd/moosefs-csi-plugin/Dockerfile-mfs3-pro
+	@docker build -t $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS4TAGCE) cmd/moosefs-csi-plugin -f cmd/moosefs-csi-plugin/Dockerfile-mfs4-ce
+	@docker build -t $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS4TAGPRO) cmd/moosefs-csi-plugin -f cmd/moosefs-csi-plugin/Dockerfile-mfs4-pro
 
 push-prod:
-	@docker push $(DOCKER_REGISTRY)/moosefs-csi-plugin:$(MFS3TAGCE)
-	@docker push $(DOCKER_REGISTRY)/moosefs-csi-plugin:$(MFS3TAGPRO)
-	@docker push $(DOCKER_REGISTRY)/moosefs-csi-plugin:$(MFS4TAGPRO)
+	@docker push $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS3TAGCE)
+	@docker push $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS3TAGPRO)
+	@docker push $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS4TAGCE)
+	@docker push $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS4TAGPRO)
 
 clean:
 	@echo "==> Cleaning releases"
