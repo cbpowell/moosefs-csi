@@ -29,6 +29,6 @@ RUN echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/moosefs.gpg] http://reposi
 RUN apt update --allow-releaseinfo-change && apt install -y moosefs-client
 
 # Copy the CSI plugin
-ADD moosefs-csi-plugin /bin/
+COPY moosefs-csi-plugin /bin/
 
 ENTRYPOINT ["/bin/moosefs-csi-plugin"]
