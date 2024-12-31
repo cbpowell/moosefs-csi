@@ -21,6 +21,10 @@ jobs:
 
     - name: Make and publish
       run: make ready
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
 
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
