@@ -21,3 +21,6 @@ jobs:
 
     - name: Make and publish
       run: make ready
+
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
