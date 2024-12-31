@@ -40,7 +40,7 @@ build-dev:
 
 push-dev:
 	@echo "==> Logging into repo"
-	@docker login --username $(USERNAME) --password ${GH_TOKEN} $(DOCKER_REGISTRY)
+	# @docker login --username $(USERNAME) --password ${GH_TOKEN} $(DOCKER_REGISTRY)
 	@echo "==> Publishing DEV $(DOCKER_REGISTRY)/moosefs-csi-plugin:$(DEVTAG)"
 	@docker push $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(DEVTAG)
 	@echo "==> Your DEV image is now available at $(DOCKER_REGISTRY)/moosefs-csi-plugin:$(DEVTAG)"
@@ -53,7 +53,7 @@ build-prod:
 
 push-prod:
 	@echo "==> Logging into repo"
-	@docker login --username $(USERNAME) --password $(PASSWORD) $(DOCKER_REGISTRY)
+	#@docker login --username $(USERNAME) --password $(PASSWORD) $(DOCKER_REGISTRY)
 	@echo "==> Publishing $(DOCKER_REGISTRY)/moosefs-csi
 	#@docker push $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS3TAGCE)
 	#@docker push $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS3TAGPRO)
