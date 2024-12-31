@@ -54,7 +54,7 @@ build-prod:
 push-prod:
 	@echo "==> Logging into repo"
 	#@docker login --username $(USERNAME) --password $(PASSWORD) $(DOCKER_REGISTRY)
-	@echo "==> Publishing $(DOCKER_REGISTRY)/moosefs-csi
+	@echo "==> Publishing $(DOCKER_REGISTRY)/moosefs-csi"
 	#@docker push $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS3TAGCE)
 	#@docker push $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS3TAGPRO)
 	@docker push $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS4TAGCE)
