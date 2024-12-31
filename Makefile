@@ -40,7 +40,6 @@ build-dev:
 
 push-dev:
 	@echo "==> Logging into repo"
-	# @docker login --username $(USERNAME) --password ${GH_TOKEN} $(DOCKER_REGISTRY)
 	@echo "==> Publishing DEV $(DOCKER_REGISTRY)/moosefs-csi-plugin:$(DEVTAG)"
 	@docker push $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(DEVTAG)
 	@echo "==> Your DEV image is now available at $(DOCKER_REGISTRY)/moosefs-csi-plugin:$(DEVTAG)"
@@ -49,16 +48,14 @@ build-prod:
 	#@docker build -t $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS3TAGCE) cmd/moosefs-csi-plugin -f cmd/moosefs-csi-plugin/Dockerfile-mfs3-ce
 	#@docker build -t $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS3TAGPRO) cmd/moosefs-csi-plugin -f cmd/moosefs-csi-plugin/Dockerfile-mfs3-pro
 	@docker build -t $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS4TAGCE) cmd/moosefs-csi-plugin -f cmd/moosefs-csi-plugin/Dockerfile-mfs4-ce
-	#@docker build -t $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS4TAGPRO) cmd/moosefs-csi-plugin -f cmd/moosefs-csi-plugin/Dockerfile-mfs4-pro
+	@docker build -t $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS4TAGPRO) cmd/moosefs-csi-plugin -f cmd/moosefs-csi-plugin/Dockerfile-mfs4-pro
 
 push-prod:
-	@echo "==> Logging into repo"
-	#@docker login --username $(USERNAME) --password $(PASSWORD) $(DOCKER_REGISTRY)
-	@echo "==> Publishing $(DOCKER_REGISTRY)/moosefs-csi"
+	@echo "==> Publishing $(DOCKER_REGISTRY)/moosefs-csi[-pro]"
 	#@docker push $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS3TAGCE)
 	#@docker push $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS3TAGPRO)
 	@docker push $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS4TAGCE)
-	#@docker push $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS4TAGPRO)
+	@docker push $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS4TAGPRO)
 
 clean:
 	@echo "==> Cleaning releases"
