@@ -21,9 +21,8 @@ MFS4TAGCE=$(DRIVER_VERSION)-$(MFS4VER)
 MFS4TAGPRO=$(DRIVER_VERSION)-$(MFS4VER)-pro
 DEVTAG=$(DRIVER_VERSION)-dev
 
-NAME=moosefs-csi
+NAME=moosefs-csi-plugin
 USERNAME=cbpowell
-PASSWORD=${GH_TOKEN} 
 REPO=cbpowell
 DOCKER_REGISTRY=ghcr.io
 
@@ -41,7 +40,7 @@ build-dev:
 
 push-dev:
 	@echo "==> Logging into repo"
-	@docker login --username $(USERNAME) --password $(PASSWORD) $(DOCKER_REGISTRY)
+	@docker login --username $(USERNAME) --password ${GH_TOKEN} $(DOCKER_REGISTRY)
 	@echo "==> Publishing DEV $(DOCKER_REGISTRY)/moosefs-csi-plugin:$(DEVTAG)"
 	@docker push $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(DEVTAG)
 	@echo "==> Your DEV image is now available at $(DOCKER_REGISTRY)/moosefs-csi-plugin:$(DEVTAG)"
