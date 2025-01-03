@@ -1,4 +1,4 @@
-module github.com/xandrus/moosefs-csi
+module github.com/cbpowell/moosefs-csi
 
 go 1.20
 

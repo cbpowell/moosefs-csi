@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2023 Saglabs SA. All Rights Reserved.
+   Copyright (c) 2024 Saglabs SA. All Rights Reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ package main
 import (
 	"flag"
 
-	"github.com/xandrus/moosefs-csi/driver"
+	"github.com/cbpowell/moosefs-csi/driver"
 	log "github.com/sirupsen/logrus"
 )
 
