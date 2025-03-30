@@ -48,7 +48,7 @@ push-dev:
 build-prod:
 	# @docker build -t $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS3TAGCE) cmd/moosefs-csi-plugin -f cmd/moosefs-csi-plugin/Dockerfile-mfs3-ce
 	# @docker build -t $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS3TAGPRO) cmd/moosefs-csi-plugin -f cmd/moosefs-csi-plugin/Dockerfile-mfs3-pro
-	@docker build -t $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS4TAGCE) cmd/moosefs-csi-plugin -f cmd/moosefs-csi-plugin/Dockerfile-mfs4-ce
+	@docker build -t $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS4TAGCE) cmd/moosefs-csi-plugin -f cmd/moosefs-csi-plugin/Dockerfile-mfs4-ce --build-arg MFS_VERSION=$(MFS4VER)
 	# @docker build -t $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(MFS4TAGPRO) cmd/moosefs-csi-plugin -f cmd/moosefs-csi-plugin/Dockerfile-mfs4-pro
 
 push-prod:
