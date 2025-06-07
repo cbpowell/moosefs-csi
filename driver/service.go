@@ -34,7 +34,7 @@ import (
 
 const (
 	driverName    = "csi.moosefs.com"
-	driverVersion = "0.9.4"
+	driverVersion = "0.9.5"
 )
 
 type Service interface{}
@@ -58,7 +58,11 @@ func StartService(service *Service, mode, csiEndpoint string) error {
 	if err != nil {
 		return err
 	}
-	csi.RegisterIdentityServer(gRPCServer, &IdentityService{})
+
+	// Attach reference to started node/controller service
+	csi.RegisterIdentityServer(gRPCServer, &IdentityService{
+		Service: service,
+	})
 
 	switch (*service).(type) {
 	case *NodeService:

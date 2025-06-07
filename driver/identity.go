@@ -18,6 +18,7 @@ package driver
 
 import (
 	"context"
+	"os"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/golang/protobuf/ptypes/wrappers"
@@ -25,7 +26,7 @@ import (
 
 type IdentityService struct {
 	csi.UnimplementedIdentityServer
-	Service
+	Service Service
 }
 
 var _ csi.IdentityServer = &IdentityService{}
@@ -65,9 +66,39 @@ func (is *IdentityService) GetPluginCapabilities(ctx context.Context, req *csi.G
 func (is *IdentityService) Probe(ctx context.Context, req *csi.ProbeRequest) (*csi.ProbeResponse, error) {
 	log.Infof("Probe")
 
+	ready := true
+
+	switch svc := is.Service.(type) {
+	case *NodeService:
+		if len(svc.mountPoints) == 0 {
+			log.Warn("Probe - no mount points found in NodeService")
+			ready = false
+		} else {
+			for _, mp := range svc.mountPoints {
+				log.Debugf("Checking Stat of mount point: %s", mp.hostMountPath)
+				if _, err := os.Stat(mp.hostMountPath); err != nil {
+					log.Warnf("Probe - mount point not ready: %s (err: %v)", mp.hostMountPath, err)
+					ready = false
+					break
+				}
+			}
+		}
+
+	case *ControllerService:
+		if svc.ctlMount == nil {
+			log.Warn("Probe - ControllerService ctlMount is nil")
+			ready = false
+		} else if _, err := os.Stat(svc.ctlMount.hostMountPath); err != nil {
+			log.Warnf("Probe - ctlMount not ready: %s (err: %v)", svc.ctlMount.hostMountPath, err)
+			ready = false
+		}
+
+	default:
+		log.Warnf("Probe - unknown service type %T; assuming not ready", svc)
+		ready = false
+	}
+
 	return &csi.ProbeResponse{
-		Ready: &wrappers.BoolValue{
-			Value: true,
-		},
+		Ready: &wrappers.BoolValue{Value: ready},
 	}, nil
 }
