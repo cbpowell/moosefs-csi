@@ -14,12 +14,12 @@
 
 MFS3VER=3.0.117
 MFS4VER=4.57.6-1
-DRIVER_VERSION ?= 0.9.5
+DRIVER_VERSION ?= 0.9.5-beta2
 #MFS3TAGCE=$(DRIVER_VERSION)-$(MFS3VER)
 #MFS3TAGPRO=$(DRIVER_VERSION)-$(MFS3VER)-pro
 MFS4TAGCE=$(DRIVER_VERSION)-$(MFS4VER)
 MFS4TAGPRO=$(DRIVER_VERSION)-$(MFS4VER)-pro
-DEVTAG=$(DRIVER_VERSION)-dev
+DEVTAG=$(DRIVER_VERSION)
 
 NAME=moosefs-csi-plugin
 USERNAME=cbpowell
@@ -36,7 +36,7 @@ compile:
 
 build-dev:
 	@echo "==> Building DEV docker images"
-	@docker build -t $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(DEVTAG) cmd/moosefs-csi-plugin
+	@docker build -t $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(DEVTAG) cmd/moosefs-csi-plugin -f cmd/moosefs-csi-plugin/Dockerfile-mfs4-ce --build-arg MFS_VERSION=$(MFS4VER)
 
 push-dev:
 	@echo "==> Logging into repo"
