@@ -1,4 +1,4 @@
-# Copyright (c) 2023 Saglabs SA. All Rights Reserved.
+# Copyright (c) 2025 Saglabs SA. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ publish-dev: clean compile build-dev push-dev
 publish-prod: clean compile build-prod push-prod
 
 compile:
-	@echo "==> Building the project"
+	@echo "==> Building the CSI driver"
 	@env CGO_ENABLED=0 GOCACHE=/tmp/go-cache GOOS=linux GOARCH=amd64 go build -a -o cmd/moosefs-csi-plugin/${NAME} cmd/moosefs-csi-plugin/main.go
 
 build-dev:

@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2023 Saglabs SA. All Rights Reserved.
+   Copyright (c) 2025 Saglabs SA. All Rights Reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -84,7 +84,7 @@ func NewMfsHandler(mfsmaster string, mfsmaster_port int, rootPath, pluginDataPat
 }
 
 func (mnt *mfsHandler) SetMfsLogging() {
-	log.Infof("Setting up Mfs Logging. Mfs path: %s", path.Join(mnt.rootPath, mnt.pluginDataPath, logsDirName))
+	log.Infof("Setting up MooseFS Logging - path: %s", path.Join(mnt.rootPath, mnt.pluginDataPath, logsDirName))
 	mfsLogFile := &lumberjack.Logger{
 		Filename:   path.Join(mnt.HostPathToLogs(), fmt.Sprintf("%s.log", mnt.name)),
 		MaxSize:    100,
@@ -94,7 +94,7 @@ func (mnt *mfsHandler) SetMfsLogging() {
 	}
 	mw := io.MultiWriter(os.Stderr, mfsLogFile)
 	log.SetOutput(mw)
-	log.Info("Mfs Logging set up!")
+	log.Info("MooseFS Logging set up!")
 }
 
 func (mnt *mfsHandler) VolumeExist(volumeId string) (bool, error) {
