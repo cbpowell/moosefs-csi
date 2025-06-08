@@ -42,6 +42,8 @@ func main() {
 
 	driver.Init(*sanityTestRun, *logLevel, *mfsLog)
 
+	log.SetLevel(LogLevelByIndex(*logLevel))
+
 	if *sanityTestRun {
 		log.Infof("=============== SANITY TEST ===============")
 	}
@@ -71,5 +73,26 @@ func main() {
 
 	if err = driver.StartService(&srv, *mode, *csiEndpoint); err != nil {
 		log.Errorf("main - couldn't start service %s", err.Error())
+	}
+}
+
+func LogLevelByIndex(logLevel int) log.Level {
+	switch logLevel {
+	case 1:
+		return log.PanicLevel
+	case 2:
+		return log.FatalLevel
+	case 3:
+		return log.ErrorLevel
+	case 4:
+		return log.WarnLevel
+	case 5:
+		return log.InfoLevel
+	case 6:
+		return log.DebugLevel
+	case 7:
+		return log.TraceLevel
+	default:
+		return log.InfoLevel // fallback/default
 	}
 }
