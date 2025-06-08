@@ -68,8 +68,8 @@ func (is *IdentityService) Probe(ctx context.Context, req *csi.ProbeRequest) (*c
 
 	ready := true
 
-	switch svc := is.Service.(type) {
-	case *NodeService:
+	switch is.Service.GetType() {
+	case "node":
 		if len(svc.mountPoints) == 0 {
 			log.Warn("Probe - no mount points found in NodeService")
 			ready = false
@@ -84,7 +84,7 @@ func (is *IdentityService) Probe(ctx context.Context, req *csi.ProbeRequest) (*c
 			}
 		}
 
-	case *ControllerService:
+	case "controller":
 		if svc.ctlMount == nil {
 			log.Warn("Probe - ControllerService ctlMount is nil")
 			ready = false

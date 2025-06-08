@@ -37,7 +37,9 @@ const (
 	driverVersion = "0.9.5"
 )
 
-type Service interface{}
+type Service interface {
+	GetType() string
+}
 
 var SanityTestRun bool
 var MfsLog bool

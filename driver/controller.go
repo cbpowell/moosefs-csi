@@ -60,6 +60,10 @@ type ControllerService struct {
 
 var _ csi.ControllerServer = &ControllerService{}
 
+func (c *ControllerService) GetType() string {
+	return "controller"
+}
+
 func NewControllerService(mfsmaster string, mfsmaster_port int, rootPath, pluginDataPath, mfsMountOptions string) (*ControllerService, error) {
 	log.Infof("NewControllerService creation - mfsmaster %s, rootDir %s, pluginDataDir %s)", mfsmaster, rootPath, pluginDataPath)
 

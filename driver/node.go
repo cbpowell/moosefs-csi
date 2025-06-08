@@ -42,6 +42,10 @@ var nodeCapabilities = []csi.NodeServiceCapability_RPC_Type{
 	//		csi.NodeServiceCapability_RPC_STAGE_UNSTAGE_VOLUME,
 }
 
+func (n *NodeService) GetType() string {
+	return "node"
+}
+
 func NewNodeService(mfsmaster string, mfsmaster_port int, rootPath, pluginDataPath, nodeId, mfsMountOptions string, mountPointsCount int) (*NodeService, error) {
 	log.Infof("NewNodeService creation (mfsmaster %s, rootDir %s, pluginDataDir %s, nodeId %s, mountPointsCount %d)", mfsmaster, rootPath, pluginDataPath, nodeId, mountPointsCount)
 
