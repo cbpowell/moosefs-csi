@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2025 Saglabs SA. All Rights Reserved.
+   Copyright (c) 2023 Saglabs SA. All Rights Reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -40,6 +40,10 @@ var nodeCapabilities = []csi.NodeServiceCapability_RPC_Type{
 	//csi.NodeServiceCapability_RPC_GET_VOLUME_STATS,
 	// csi.NodeServiceCapability_RPC_VOLUME_CONDITION,
 	//		csi.NodeServiceCapability_RPC_STAGE_UNSTAGE_VOLUME,
+}
+
+func (n *NodeService) GetType() string {
+	return "node"
 }
 
 func NewNodeService(mfsmaster string, mfsmaster_port int, rootPath, pluginDataPath, nodeId, mfsMountOptions string, mountPointsCount int) (*NodeService, error) {

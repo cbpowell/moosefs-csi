@@ -1,5 +1,5 @@
 /*
-   Copyright (c) 2025 Saglabs SA. All Rights Reserved.
+   Copyright (c) 2023 Saglabs SA. All Rights Reserved.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
@@ -59,6 +59,10 @@ type ControllerService struct {
 }
 
 var _ csi.ControllerServer = &ControllerService{}
+
+func (c *ControllerService) GetType() string {
+	return "controller"
+}
 
 func NewControllerService(mfsmaster string, mfsmaster_port int, rootPath, pluginDataPath, mfsMountOptions string) (*ControllerService, error) {
 	log.Infof("NewControllerService creation - mfsmaster %s, rootDir %s, pluginDataDir %s)", mfsmaster, rootPath, pluginDataPath)

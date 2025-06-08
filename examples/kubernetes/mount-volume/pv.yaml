@@ -1,0 +1,15 @@
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: my-moosefs-pv-mount
+spec:
+  storageClassName: ""               # empty Storage Class
+  capacity:
+    storage: 1Gi                     # required, however does not have any effect
+  accessModes:
+    - ReadWriteMany
+  csi:
+    driver: csi.moosefs.com
+    volumeHandle: my-mount-volume    # unique volume name
+    volumeAttributes:
+      mfsSubDir: "/"                 # subfolder to be mounted as a rootdir (inside k8s_root_dir)
