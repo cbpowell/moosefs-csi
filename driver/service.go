@@ -58,18 +58,32 @@ func StartService(service *Service, mode, csiEndpoint string) error {
 	if err != nil {
 		return err
 	}
-	csi.RegisterIdentityServer(gRPCServer, &IdentityService{})
 
-	switch (*service).(type) {
+	svc := *service // Dereference pointer to get the actual interface value
+	var identitySrv *IdentityService
+
+	switch srv := svc.(type) {
 	case *NodeService:
-		log.Infof("StartService - Registering node service")
+		identitySrv = &IdentityService{
+			Service:     *service,
+			MountPoints: srv.mountPoints,
+		}
 		csi.RegisterNodeServer(gRPCServer, (*service).(csi.NodeServer))
 	case *ControllerService:
-		log.Infof("StartService - Registering controller service")
+		var mounts []*mfsHandler
+		if srv.ctlMount != nil {
+			mounts = []*mfsHandler{srv.ctlMount}
+		}
+		identitySrv = &IdentityService{
+			Service:     *service,
+			MountPoints: mounts,
+		}
 		csi.RegisterControllerServer(gRPCServer, (*service).(csi.ControllerServer))
 	default:
-		return fmt.Errorf("StartService: Unrecognized service type: %T", service)
+		return fmt.Errorf("StartService: Unrecognized service type: %T", svc)
 	}
+
+	csi.RegisterIdentityServer(gRPCServer, identitySrv)
 
 	log.Info("StartService - Starting to serve!")
 	err = gRPCServer.Serve(listener)

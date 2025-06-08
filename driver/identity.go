@@ -18,6 +18,7 @@ package driver
 
 import (
 	"context"
+	"os"
 
 	"github.com/container-storage-interface/spec/lib/go/csi"
 	"github.com/golang/protobuf/ptypes/wrappers"
@@ -26,6 +27,8 @@ import (
 type IdentityService struct {
 	csi.UnimplementedIdentityServer
 	Service
+
+	MountPoints []*mfsHandler
 }
 
 var _ csi.IdentityServer = &IdentityService{}
@@ -65,9 +68,31 @@ func (is *IdentityService) GetPluginCapabilities(ctx context.Context, req *csi.G
 func (is *IdentityService) Probe(ctx context.Context, req *csi.ProbeRequest) (*csi.ProbeResponse, error) {
 	log.Infof("Probe")
 
+	if len(is.MountPoints) == 0 {
+		log.Warn("Probe: No mount points configured")
+		return &csi.ProbeResponse{
+			Ready: &wrappers.BoolValue{Value: false},
+		}, nil
+	}
+
+	// Validate actual mount paths exist
+	for _, mp := range is.MountPoints {
+		if mp == nil || mp.hostMountPath == "" {
+			log.Warn("Probe: Skipping invalid mount point reference")
+			return &csi.ProbeResponse{
+				Ready: &wrappers.BoolValue{Value: false},
+			}, nil
+		}
+		if _, err := os.Stat(mp.hostMountPath); err != nil {
+			log.Warnf("Probe: Mount path does not exist or is inaccessible: %s", mp.hostMountPath)
+			return &csi.ProbeResponse{
+				Ready: &wrappers.BoolValue{Value: false},
+			}, nil
+		}
+	}
+
+	// All mount points were valid
 	return &csi.ProbeResponse{
-		Ready: &wrappers.BoolValue{
-			Value: true,
-		},
+		Ready: &wrappers.BoolValue{Value: true},
 	}, nil
 }
