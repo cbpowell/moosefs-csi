@@ -37,9 +37,7 @@ const (
 	driverVersion = "0.9.5"
 )
 
-type Service interface {
-	GetType() string
-}
+type Service interface{}
 
 var SanityTestRun bool
 var MfsLog bool
@@ -61,21 +59,31 @@ func StartService(service *Service, mode, csiEndpoint string) error {
 		return err
 	}
 
-	// Attach reference to started node/controller service
-	csi.RegisterIdentityServer(gRPCServer, &IdentityService{
-		Service: service,
-	})
+	svc := *service // Dereference pointer to get the actual interface value
+	var identitySrv *IdentityService
 
-	switch (*service).(type) {
+	switch srv := svc.(type) {
 	case *NodeService:
-		log.Infof("StartService - Registering node service")
+		identitySrv = &IdentityService{
+			Service:     *service,
+			MountPoints: srv.mountPoints,
+		}
 		csi.RegisterNodeServer(gRPCServer, (*service).(csi.NodeServer))
 	case *ControllerService:
-		log.Infof("StartService - Registering controller service")
+		var mounts []*mfsHandler
+		if srv.ctlMount != nil {
+			mounts = []*mfsHandler{srv.ctlMount}
+		}
+		identitySrv = &IdentityService{
+			Service:     *service,
+			MountPoints: mounts,
+		}
 		csi.RegisterControllerServer(gRPCServer, (*service).(csi.ControllerServer))
 	default:
-		return fmt.Errorf("StartService: Unrecognized service type: %T", service)
+		return fmt.Errorf("StartService: Unrecognized service type: %T", svc)
 	}
+
+	csi.RegisterIdentityServer(gRPCServer, identitySrv)
 
 	log.Info("StartService - Starting to serve!")
 	err = gRPCServer.Serve(listener)

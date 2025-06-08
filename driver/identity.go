@@ -26,7 +26,9 @@ import (
 
 type IdentityService struct {
 	csi.UnimplementedIdentityServer
-	Service Service
+	Service
+
+	MountPoints []*mfsHandler
 }
 
 var _ csi.IdentityServer = &IdentityService{}
@@ -66,39 +68,31 @@ func (is *IdentityService) GetPluginCapabilities(ctx context.Context, req *csi.G
 func (is *IdentityService) Probe(ctx context.Context, req *csi.ProbeRequest) (*csi.ProbeResponse, error) {
 	log.Infof("Probe")
 
-	ready := true
-
-	switch is.Service.GetType() {
-	case "node":
-		if len(svc.mountPoints) == 0 {
-			log.Warn("Probe - no mount points found in NodeService")
-			ready = false
-		} else {
-			for _, mp := range svc.mountPoints {
-				log.Debugf("Checking Stat of mount point: %s", mp.hostMountPath)
-				if _, err := os.Stat(mp.hostMountPath); err != nil {
-					log.Warnf("Probe - mount point not ready: %s (err: %v)", mp.hostMountPath, err)
-					ready = false
-					break
-				}
-			}
-		}
-
-	case "controller":
-		if svc.ctlMount == nil {
-			log.Warn("Probe - ControllerService ctlMount is nil")
-			ready = false
-		} else if _, err := os.Stat(svc.ctlMount.hostMountPath); err != nil {
-			log.Warnf("Probe - ctlMount not ready: %s (err: %v)", svc.ctlMount.hostMountPath, err)
-			ready = false
-		}
-
-	default:
-		log.Warnf("Probe - unknown service type %T; assuming not ready", svc)
-		ready = false
+	if len(is.MountPoints) == 0 {
+		log.Warn("Probe: No mount points configured")
+		return &csi.ProbeResponse{
+			Ready: &wrappers.BoolValue{Value: false},
+		}, nil
 	}
 
+	// Validate actual mount paths exist
+	for _, mp := range is.MountPoints {
+		if mp == nil || mp.hostMountPath == "" {
+			log.Warn("Probe: Skipping invalid mount point reference")
+			return &csi.ProbeResponse{
+				Ready: &wrappers.BoolValue{Value: false},
+			}, nil
+		}
+		if _, err := os.Stat(mp.hostMountPath); err != nil {
+			log.Warnf("Probe: Mount path does not exist or is inaccessible: %s", mp.hostMountPath)
+			return &csi.ProbeResponse{
+				Ready: &wrappers.BoolValue{Value: false},
+			}, nil
+		}
+	}
+
+	// All mount points were valid
 	return &csi.ProbeResponse{
-		Ready: &wrappers.BoolValue{Value: ready},
+		Ready: &wrappers.BoolValue{Value: true},
 	}, nil
 }
