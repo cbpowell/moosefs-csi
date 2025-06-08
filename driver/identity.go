@@ -83,6 +83,7 @@ func (is *IdentityService) Probe(ctx context.Context, req *csi.ProbeRequest) (*c
 				Ready: &wrappers.BoolValue{Value: false},
 			}, nil
 		}
+		log.Debugf("Probe: Checking mount point: %s", mp.hostMountPath)
 		if _, err := os.Stat(mp.hostMountPath); err != nil {
 			log.Warnf("Probe: Mount path does not exist or is inaccessible: %s", mp.hostMountPath)
 			return &csi.ProbeResponse{
