@@ -14,12 +14,12 @@
 
 MFS3VER=3.0.117
 MFS4VER=4.57.6-1
-DRIVER_VERSION ?= 0.9.5-beta2
+DRIVER_VERSION ?= 0.9.5
 #MFS3TAGCE=$(DRIVER_VERSION)-$(MFS3VER)
 #MFS3TAGPRO=$(DRIVER_VERSION)-$(MFS3VER)-pro
 MFS4TAGCE=$(DRIVER_VERSION)-$(MFS4VER)
 MFS4TAGPRO=$(DRIVER_VERSION)-$(MFS4VER)-pro
-DEVTAG=$(DRIVER_VERSION)
+DEVTAG=$(DRIVER_VERSION)-$(MFS4VER)-dev
 
 NAME=moosefs-csi-plugin
 USERNAME=cbpowell
@@ -41,7 +41,7 @@ build-dev:
 push-dev:
 	@echo "==> Logging into repo"
 	# @docker login --username $(USERNAME) --password ${GH_TOKEN} $(DOCKER_REGISTRY)
-	@echo "==> Publishing DEV $(DOCKER_REGISTRY)/moosefs-csi-plugin:$(DEVTAG)"
+	@echo "==> Publishing DEV $(DOCKER_REGISTRY)/moosefs-csi:$(DEVTAG)"
 	@docker push $(DOCKER_REGISTRY)/$(REPO)/moosefs-csi:$(DEVTAG)
 	@echo "==> Your DEV image is now available at $(DOCKER_REGISTRY)/moosefs-csi-plugin:$(DEVTAG)"
 
